@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, Switch, View, Text } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -90,15 +90,24 @@ function SettingItem({
 }
 
 export default function SettingsScreen() {
-  const [showHints, setShowHints] = useState(true);
-  const [autoCorrection, setAutoCorrection] = useState(true);
-  const [caseSensitive, setCaseSensitive] = useState(false);
-  const [autoNext, setAutoNext] = useState(true);
-  const [shuffleQuestions, setShuffleQuestions] = useState(false);
+  // 既存のステート設定
+  const [showHints, setShowHints] = useState(false); // デフォルトでfalse（自動ヒント表示しない）
+  const [shuffleQuestions, setShuffleQuestions] = useState(true); // デフォルトでtrue（シャッフルする）
   const [darkMode, setDarkMode] = useState(useColorScheme() === 'dark');
   
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
+
+  // この設定でクイズを開始するボタンを追加
+  const startQuizWithSettings = () => {
+    router.push({
+      pathname: '/quiz',
+      params: {
+        shuffle: shuffleQuestions ? 'true' : 'false',
+        showHints: showHints ? 'true' : 'false'
+      }
+    });
+  };
 
   return (
     <ParallaxScrollView
@@ -184,18 +193,17 @@ export default function SettingsScreen() {
           icon="person.fill"
         />
       </ThemedView>
-
-      {/* 戻るボタンを追加 */}
+      
+      {/* この設定でクイズを開始するボタン */}
       <TouchableOpacity
-        style={[styles.backButton, { backgroundColor: Colors[colorScheme].tint }]}
-        onPress={() => router.replace('/')}
-
+        style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
+        onPress={startQuizWithSettings}
       >
-        <ThemedText style={styles.buttonText}>
-          ホーム画面に戻る
+        <ThemedText style={styles.startButtonText}>
+          この設定でテストを開始
         </ThemedText>
       </TouchableOpacity>
-
+      
       <ThemedText style={styles.footer}>© 2025 学名テストアプリ</ThemedText>
     </ParallaxScrollView>
   );

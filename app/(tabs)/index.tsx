@@ -92,7 +92,11 @@ export default function HomeScreen() {
     // パラメータ付きでクイズ画面に遷移
     router.push({ 
       pathname: '/quiz',
-      params: { range: selectedRange }
+      params: { 
+        range: selectedRange,
+        shuffle: 'true',  // デフォルトでシャッフルを有効に
+        showHints: 'false' // デフォルトで自動ヒント表示を無効に
+      }
     });
   };
   

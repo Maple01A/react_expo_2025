@@ -16,39 +16,15 @@ import { QuizQuestion } from '@/types/quiz';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function QuizScreen() {
-  // URLパラメータから範囲を取得
-  const params = useLocalSearchParams<{ range?: string }>();
+  // URLパラメータから設定を取得
+  const params = useLocalSearchParams<{ 
+    range?: string; 
+    shuffle?: string;
+    showHints?: string;
+  }>();
   const quizRange = params.range || 'all';
-
-  // 選択された範囲に基づいて問題をフィルタリング
-  const getFilteredQuestions = (range: string): QuizQuestion[] => {
-    if (range === 'all') {
-      return quizQuestions;
-    }
-    
-    // 範囲が "1-5" のような形式の場合
-    const match = range.match(/(\d+)-(\d+)/);
-    if (match) {
-      const startId = parseInt(match[1]);
-      const endId = parseInt(match[2]);
-      
-      return quizQuestions.filter(q => {
-        const questionId = parseInt(q.id);
-        return questionId >= startId && questionId <= endId;
-      });
-    }
-    
-    // 単一のIDの場合
-    if (!isNaN(Number(range))) {
-      return quizQuestions.filter(q => q.id === range);
-    }
-    
-    // デフォルトは全問題
-    return quizQuestions;
-  };
-  
-  // フィルタリングされた問題
-  const filteredQuestions = getFilteredQuestions(quizRange);
+  const shouldShuffle = params.shuffle === 'true';
+  const shouldShowHints = params.showHints !== 'false'; // デフォルトはtrue
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showHint, setShowHint] = useState(false);
@@ -59,12 +35,70 @@ export default function QuizScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
   
+  // 配列をシャッフルする関数
+  const shuffleArray = (array: QuizQuestion[]): QuizQuestion[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+  
+  // 選択された範囲に基づいて問題をフィルタリング
+  const getFilteredQuestions = (range: string): QuizQuestion[] => {
+    let questions = [];
+    
+    if (range === 'all') {
+      questions = [...quizQuestions];
+    } else {
+      // 範囲が "1-5" のような形式の場合
+      const match = range.match(/(\d+)-(\d+)/);
+      if (match) {
+        const startId = parseInt(match[1]);
+        const endId = parseInt(match[2]);
+        
+        questions = quizQuestions.filter(q => {
+          const questionId = parseInt(q.id);
+          return questionId >= startId && questionId <= endId;
+        });
+      } else if (!isNaN(Number(range))) {
+        // 単一のIDの場合
+        questions = quizQuestions.filter(q => q.id === range);
+      } else {
+        // デフォルトは全問題
+        questions = [...quizQuestions];
+      }
+    }
+    
+    // シャッフルが有効な場合、問題の順序をシャッフル
+    if (shouldShuffle) {
+      console.log("問題をシャッフルします");
+      return shuffleArray(questions);
+    }
+    
+    return questions;
+  };
+  
+  // フィルタリングされた問題
+  const [filteredQuestions, setFilteredQuestions] = useState<QuizQuestion[]>([]);
+  
+  // 初回レンダリング時に問題をセットアップ
+  useEffect(() => {
+    const questions = getFilteredQuestions(quizRange);
+    setFilteredQuestions(questions);
+    // シャッフルのデバッグ出力
+    if (shouldShuffle) {
+      console.log("シャッフル後の問題ID:", questions.map(q => q.id).join(', '));
+    }
+  }, [quizRange, shouldShuffle]);
+  
   const totalQuestions = filteredQuestions.length;
   const currentQuestion = filteredQuestions[currentQuestionIndex];
   
   // クイズが完了したかチェックする
   useEffect(() => {
-    if (currentQuestionIndex >= filteredQuestions.length) {
+    if (currentQuestionIndex >= filteredQuestions.length && filteredQuestions.length > 0) {
       setCompleted(true);
     }
   }, [currentQuestionIndex, filteredQuestions.length]);
@@ -76,8 +110,10 @@ export default function QuizScreen() {
     }
   }, [completed]);
   
-  // 回答をチェック
+  // 回答をチェックする関数を修正
   const checkAnswer = (answer: string) => {
+    if (!currentQuestion) return;
+    
     const normalizedAnswer = answer.trim().toLowerCase();
     const normalizedCorrectAnswer = currentQuestion.answer.toLowerCase();
     
@@ -92,18 +128,19 @@ export default function QuizScreen() {
         nextQuestion();
       }, 1000);
     } else {
-      // 不正解の場合、ヒントを表示し、1秒後にフィードバックをリセット
-      setShowHint(true);
+      // 不正解の場合、ヒント表示設定がONの場合のみヒントを表示
+      if (shouldShowHints) {
+        setShowHint(true);
+      }
       
       // 不正解フィードバックを表示した後、フィードバックのみをリセット
-      // これにより入力欄は引き続き使用可能に
       setTimeout(() => {
         setIsCorrect(null);
       }, 1500);
     }
   };
   
-  // ヒントの表示/非表示を切り替え
+  // ヒントボタンを押したときの処理
   const toggleHint = () => {
     setShowHint(prev => !prev);
   };
@@ -246,9 +283,16 @@ export default function QuizScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText style={styles.rangeInfo}>
-          {quizRange === 'all' ? '全問題' : `問題範囲: ${quizRange}`}
-        </ThemedText>
+        <View>
+          <ThemedText style={styles.rangeInfo}>
+            {quizRange === 'all' ? '全問題' : `問題範囲: ${quizRange}`}
+          </ThemedText>
+          {shouldShuffle && (
+            <ThemedText style={styles.shuffleInfo}>
+              シャッフルモード
+            </ThemedText>
+          )}
+        </View>
         
         <TouchableOpacity
           style={styles.resetButton}
@@ -263,7 +307,10 @@ export default function QuizScreen() {
       <QuizProgress progress={progress} totalQuestions={totalQuestions} />
       
       <Animated.View entering={FadeInDown.duration(300)}>
-        <QuizCard question={currentQuestion} showHint={showHint} />
+        <QuizCard 
+          question={currentQuestion} 
+          showHint={showHint} // shouldShowHintsの条件を削除
+        />
       </Animated.View>
       
       <ThemedText style={[
@@ -366,5 +413,10 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     paddingVertical: 10,
+  },
+  shuffleInfo: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 4,
   },
 });
