@@ -38,7 +38,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="setting"
         options={{
           title: '設定',
           headerTitle: '学名テスト', // ヘッダータイトルを統一
