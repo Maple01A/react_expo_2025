@@ -194,16 +194,6 @@ export default function SettingsScreen() {
         />
       </ThemedView>
       
-      {/* この設定でクイズを開始するボタン */}
-      <TouchableOpacity
-        style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
-        onPress={startQuizWithSettings}
-      >
-        <ThemedText style={styles.startButtonText}>
-          この設定でテストを開始
-        </ThemedText>
-      </TouchableOpacity>
-      
       <ThemedText style={styles.footer}>© 2025 学名テストアプリ</ThemedText>
     </ParallaxScrollView>
   );

@@ -1,8 +1,7 @@
+import React, { useState } from 'react';
 import { Image } from 'expo-image';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useState } from 'react';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -11,6 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { quizQuestions } from '@/data/quizData';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 // 範囲選択用のコンポーネント
 function RangeSelector({ 
@@ -61,31 +61,16 @@ function RangeSelector({
 export default function HomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
-  
-  // クイズ範囲の設定
   const [selectedRange, setSelectedRange] = useState('all');
-  
-  // クイズIDから動的に範囲を作成
-  const createRangesFromQuizData = () => {
-    const ranges = [{ id: 'all', name: '全問題' }];
-    
-    // 問題数に応じて範囲を動的に作成
-    const totalQuestions = quizQuestions.length;
-    const rangeSize = 5; // 5問ごとに範囲を分ける
-    
-    for (let i = 0; i < totalQuestions; i += rangeSize) {
-      const start = i + 1;
-      const end = Math.min(i + rangeSize, totalQuestions);
-      ranges.push({
-        id: `${start}-${end}`,
-        name: `問題${start}〜${end}`
-      });
-    }
-    
-    return ranges;
-  };
-  
-  const quizRangesFromData = createRangesFromQuizData();
+
+  // 固定のテスト範囲を定義
+  const quizRanges = [
+    { id: 'all', name: '全問題' },
+    { id: '1-13', name: '問題1〜13' },
+    { id: '14-26', name: '問題14〜26' },
+    { id: '27-45', name: '問題27〜45' },
+    { id: '46-51', name: '問題46〜51' }
+  ];
   
   // 選択した範囲でクイズを開始
   const startQuizWithRange = () => {
@@ -123,7 +108,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">ヒントについて</ThemedText>
         <ThemedText>
-          ヒントボタンを押すか、間違えた場合にヒントが表示されます。ヒントを参考にもう一度挑戦してみましょう！
+          ヒントボタンを押すとヒントが表示されます。ヒントを参考にもう一度挑戦してみましょう！
         </ThemedText>
       </ThemedView>
       
@@ -133,7 +118,7 @@ export default function HomeScreen() {
         
         <RangeSelector
           title="テストする問題範囲"
-          ranges={quizRangesFromData}
+          ranges={quizRanges}
           selectedRange={selectedRange}
           onSelectRange={setSelectedRange}
         />
@@ -143,9 +128,12 @@ export default function HomeScreen() {
         style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
         onPress={startQuizWithRange}
       >
-        <ThemedText style={styles.buttonText}>
-          テストを始める
-        </ThemedText>
+        <View style={styles.startButtonContent}>
+          <ThemedText style={styles.startButtonText}>
+            テストを開始
+          </ThemedText>
+          <IconSymbol name="arrow.right" color="#FFF" size={20} />
+        </View>
       </TouchableOpacity>
     </ParallaxScrollView>
   );
@@ -169,16 +157,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   startButton: {
-    height: 50,
-    borderRadius: 25,
+    width: '100%',
+    height: 55,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
-  buttonText: {
+  startButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  startButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginRight: 8,
   },
   // 範囲選択のスタイル
   rangeSection: {
@@ -209,6 +203,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   rangeItemText: {
+    fontSize: 14,
+  },
+  settingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    padding: 10,
+  },
+  settingsButtonText: {
+    marginLeft: 5,
     fontSize: 14,
   },
 });
