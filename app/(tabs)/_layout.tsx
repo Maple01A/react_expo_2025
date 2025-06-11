@@ -25,7 +25,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'ホーム',
-          headerTitle: '学名テスト', // ヘッダータイトルを統一
+          headerTitle: '学名テスト', 
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
@@ -41,8 +41,8 @@ export default function TabLayout() {
         name="setting"
         options={{
           title: '設定',
-          headerTitle: '学名テスト', // ヘッダータイトルを統一
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+          headerTitle: '学名テスト', 
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="setting.fill" color={color} />,
         }}
       />
     </Tabs>

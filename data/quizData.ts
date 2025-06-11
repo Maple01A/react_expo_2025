@@ -302,11 +302,71 @@ export const quizQuestions: QuizQuestion[] = [
     answer: 'Coffea liberica Bull.',
     hint: 'Coffea liberica Bull.',
   },
-        {
+      {
     id: '51',
     question: 'カカオ',
     answer: 'Theobroma cacao L.',
     hint: 'Theobroma cacao L.',
+  },
+      {
+    id: '52',
+    question: 'シナモン',
+    answer: 'Cinnamomum zeylanicum Nees',
+    hint: 'Cinnamomum zeylanicum Nees',
+  },
+      {
+    id: '53',
+    question: 'チョウジ',
+    answer: 'Eugenia aromatica Kuntze',
+    hint: 'Eugenia aromatica Kuntze',
+  },      
+      {
+    id: '54',
+    question: 'トウガラシ（唐辛子）',
+    answer: 'Capsicum frutescens L.',
+    hint: 'Capsicum frutescens L.',
+  },      
+      {
+    id: '55',
+    question: 'コショウ（胡椒）',
+    answer: 'Piper nigrum L.',
+    hint: 'Piper nigrum L.',
+  },      
+      {
+    id: '56',
+    question: 'シロガラシ（白芥子）',
+    answer: 'Sinapis alba L.',
+    hint: 'Sinapis alba L.',
+  },      
+      {
+    id: '57',
+    question: 'クロガラシ（黒芥子）',
+    answer: 'Brassica nigra L.',
+    hint: 'Brassica nigra L.',
+  },
+      {
+    id: '58',
+    question: 'サトウキビ（甘蔗）',
+    answer: 'Saccharum officinarum L.',
+    hint: 'Saccharum officinarum L.',
+  },
+        {
+    id: '59',
+    question: 'タイム',
+    answer: 'Thymus vulgaris L.',
+    hint: 'Thymus vulgaris L.',
+  },
+        {
+    id: '60',
+    question: 'テンサイ（甜菜，ビート）',
+    answer: 'Beta vulgaris L.',
+    hint: 'Beta vulgaris L.',
+  },
+        {
+    id: '61',
+    question: 'ステビア',
+    answer: 'Stevia rebaudiana Bertoni',
+    hint: 'Stevia rebaudiana Bertoni',
   },
 
 ];
