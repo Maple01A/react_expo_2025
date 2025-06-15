@@ -117,7 +117,7 @@ export default function SettingsScreen() {
         <ThemedText type="title">設定</ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.section}>
+{/*       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           クイズ設定
         </ThemedText>
@@ -167,7 +167,7 @@ export default function SettingsScreen() {
           />
         </SettingItem>
       </ThemedView>
-
+ */}
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           アプリ情報
