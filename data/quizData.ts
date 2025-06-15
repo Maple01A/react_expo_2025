@@ -86,287 +86,287 @@ export const quizQuestions: QuizQuestion[] = [
     answer: 'Glycine max Merr.',
     hint: 'Glycine max Merr.',
   },
-    {
+  {
     id: '15',
     question: 'インゲンマメ',
     answer: 'Phaseolus vulgaris L.',
     hint: 'Phaseolus vulgaris L.',
   },
-    {
+  {
     id: '16',
     question: 'エンドウ',
     answer: 'Pisum sativum L.',
     hint: 'Pisum sativum L.',
   },
-    {
+  {
     id: '17',
     question: 'ソラマメ',
     answer: 'Vicia faba L.',
     hint: 'Vicia faba L.',
   },
-    {
+  {
     id: '18',
     question: 'アズキ',
     answer: 'Vigna angularis (Willd.) Ohwi et Ohashi',
     hint: 'Vigna angularis (Willd.) Ohwi et Ohashi',
   },
-    {
+  {
     id: '19',
     question: 'ササゲ',
     answer: 'Vigna unguiculata Walp.',
     hint: 'Vigna unguiculata Walp.',
   },
-    {
+  {
     id: '20',
     question: 'リョクトウ',
     answer: 'Vigna radiata R. Wilczek',
     hint: 'Vigna radiata R. Wilczek',
   },
-    {
+  {
     id: '21',
     question: 'ラッカセイ ',
     answer: 'Arachis hypogaea L.',
     hint: 'Arachis hypogaea L.',
   },
-    {
+  {
     id: '22',
     question: 'サツマイモ',
     answer: 'Ipomoea batatas Lam.',
     hint: 'Ipomoea batatas Lam.',
   },
-    {
+  {
     id: '23',
     question: 'ジャガイモ',
     answer: 'Solanum tuberosum L.',
     hint: 'Solanum tuberosum L.',
   },
-    {
+  {
     id: '24',
     question: 'キャッサバ',
     answer: 'Manihot esculenta Crantz',
     hint: 'Manihot esculenta Crantz',
   },
-    {
+  {
     id: '25',
     question: 'タロイモ',
     answer: 'Colocasia spp.',
     hint: 'Colocasia spp.',
   },
-    {
+  {
     id: '26',
     question: 'ヤムイモ',
     answer: 'Dioscorea spp.',
     hint: 'Dioscorea spp.',
   },
-    {
+  {
     id: '27',
     question: 'アジアメン',
     answer: 'Gossypium herbaceum L.',
     hint: 'Gossypium herbaceum L.',
   },
-    {
+  {
     id: '28',
     question: 'リクチメン',
     answer: 'Gossypium hirsutum L.',
     hint: 'Gossypium hirsutum L.',
   },
-    {
+  {
     id: '29',
     question: 'カイトウ綿',
     answer: 'Gossypium barbadense L.',
     hint: 'Gossypium barbadense L.',
   },
-    {
+  {
     id: '30',
     question: 'アマ',
     answer: 'Linum usitatissimum L.',
     hint: 'Linum usitatissimum L.',
   },
-    {
+  {
     id: '31',
     question: 'アサ',
     answer: 'Cannabis sativa L.',
     hint: 'Cannabis sativa L.',
   },
-    {
+  {
     id: '32',
     question: 'ジュート',
     answer: 'Corchorus capsularis L.',
     hint: 'Corchorus capsularis L.',
   },
-    {
+  {
     id: '33',
     question: 'シマツナソ',
     answer: 'Corchorus olitorius L.',
     hint: 'Corchorus olitorius L.',
   },
 
-    {
+  {
     id: '34',
     question: 'イグサ',
     answer: 'Juncus decipiens Nakai',
     hint: 'Juncus decipiens Nakai',
-  },  {
+  }, {
     id: '35',
     question: 'コウゾ（楮）',
     answer: 'Broussonetia kazinoki B. papyrifera',
     hint: 'Broussonetia kazinoki B. papyrifera',
   },
-    {
+  {
     id: '36',
     question: 'ミツマタ',
     answer: 'Edgeworthia chrysantha Lindl.',
     hint: 'Edgeworthia chrysantha Lindl.',
   },
-    {
+  {
     id: '37',
     question: 'ダイズ（大豆）',
     answer: 'Glycine max Merr.',
     hint: 'Glycine max Merr.',
   },
-    {
+  {
     id: '38',
     question: 'ヒマワリ',
     answer: 'Helianthus annuus L.',
     hint: 'Helianthus annuus L.',
   },
-    {
+  {
     id: '39',
     question: '洋種ナタネ',
     answer: 'Brassica napus L.',
     hint: 'Brassica napus L.',
   },
-      {
+  {
     id: '40',
     question: '在来種ナタネ',
     answer: 'Brassica campestris L.',
     hint: 'Brassica campestris L.',
   },
-      {
+  {
     id: '41',
     question: 'ゴマ',
     answer: 'Sesamum indicum L.',
     hint: 'Sesamum indicum L.',
   },
-      {
+  {
     id: '42',
     question: 'ベニバナ',
     answer: 'Carthamus tinctorius L.',
     hint: 'Carthamus tinctorius L.',
   },
-      {
+  {
     id: '43',
     question: 'オリーブ',
     answer: 'Olea europaea L.',
     hint: 'Olea europaea L.',
   },
-      {
+  {
     id: '44',
     question: 'ココヤシ',
     answer: 'Cocos nucifera L.',
     hint: 'Cocos nucifera L.',
   },
-      {
+  {
     id: '45',
     question: 'アブラヤシ',
     answer: 'Elaeis guineensis Jacq.',
     hint: 'Elaeis guineensis Jacq.',
   },
-      {
+  {
     id: '46',
     question: 'チャ',
     answer: 'Camellia sinensis L.',
     hint: 'Camellia sinensis L.',
   },
-      {
+  {
     id: '47',
     question: 'タバコ',
     answer: 'Nicotiana tabacum L.',
     hint: 'Nicotiana tabacum L.',
   },
-      {
+  {
     id: '48',
     question: 'アラビアコーヒー',
     answer: 'Coffea arabica L.',
     hint: 'Coffea arabica L.',
   },
-      {
+  {
     id: '49',
     question: 'ロブスタコーヒー',
     answer: 'Coffea robusta Lind.',
     hint: 'Coffea robusta Lind.',
   },
-      {
+  {
     id: '50',
     question: 'リベリアコーヒー',
     answer: 'Coffea liberica Bull.',
     hint: 'Coffea liberica Bull.',
   },
-      {
+  {
     id: '51',
     question: 'カカオ',
     answer: 'Theobroma cacao L.',
     hint: 'Theobroma cacao L.',
   },
-      {
+  {
     id: '52',
     question: 'シナモン',
     answer: 'Cinnamomum zeylanicum Nees',
     hint: 'Cinnamomum zeylanicum Nees',
   },
-      {
+  {
     id: '53',
     question: 'チョウジ',
     answer: 'Eugenia aromatica Kuntze',
     hint: 'Eugenia aromatica Kuntze',
-  },      
-      {
+  },
+  {
     id: '54',
     question: 'トウガラシ（唐辛子）',
     answer: 'Capsicum frutescens L.',
     hint: 'Capsicum frutescens L.',
-  },      
-      {
+  },
+  {
     id: '55',
     question: 'コショウ（胡椒）',
     answer: 'Piper nigrum L.',
     hint: 'Piper nigrum L.',
-  },      
-      {
+  },
+  {
     id: '56',
     question: 'シロガラシ（白芥子）',
     answer: 'Sinapis alba L.',
     hint: 'Sinapis alba L.',
-  },      
-      {
+  },
+  {
     id: '57',
     question: 'クロガラシ（黒芥子）',
     answer: 'Brassica nigra L.',
     hint: 'Brassica nigra L.',
   },
-      {
+  {
     id: '58',
     question: 'サトウキビ（甘蔗）',
     answer: 'Saccharum officinarum L.',
     hint: 'Saccharum officinarum L.',
   },
-        {
+  {
     id: '59',
     question: 'タイム',
     answer: 'Thymus vulgaris L.',
     hint: 'Thymus vulgaris L.',
   },
-        {
+  {
     id: '60',
     question: 'テンサイ（甜菜，ビート）',
     answer: 'Beta vulgaris L.',
     hint: 'Beta vulgaris L.',
   },
-        {
+  {
     id: '61',
     question: 'ステビア',
     answer: 'Stevia rebaudiana Bertoni',
     hint: 'Stevia rebaudiana Bertoni',
   },
 
-];
+];  

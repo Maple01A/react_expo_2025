@@ -35,12 +35,12 @@ const defaultSettings: Omit<
 
 const SettingsContext = createContext<SettingsContextType>({
   ...defaultSettings,
-  setShowHints: () => {},
-  setAutoCorrection: () => {},
-  setCaseSensitive: () => {},
-  setAutoNext: () => {},
-  setShuffleQuestions: () => {},
-  setDarkMode: () => {},
+  setShowHints: () => { },
+  setAutoCorrection: () => { },
+  setCaseSensitive: () => { },
+  setAutoNext: () => { },
+  setShuffleQuestions: () => { },
+  setDarkMode: () => { },
 });
 
 export const useSettings = () => useContext(SettingsContext);

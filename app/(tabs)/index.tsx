@@ -13,36 +13,36 @@ import { quizQuestions } from '@/data/quizData';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 // 範囲選択用のコンポーネント
-function RangeSelector({ 
-  title, 
-  ranges, 
-  selectedRange, 
-  onSelectRange 
-}: { 
-  title: string; 
+function RangeSelector({
+  title,
+  ranges,
+  selectedRange,
+  onSelectRange
+}: {
+  title: string;
   ranges: { id: string; name: string }[];
   selectedRange: string;
   onSelectRange: (rangeId: string) => void;
 }) {
   const colorScheme = useColorScheme() ?? 'light';
-  
+
   return (
     <ThemedView style={styles.rangeSelector}>
       <ThemedText style={styles.rangeSelectorTitle}>{title}</ThemedText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.rangesScrollView}>
         <View style={styles.rangesContainer}>
           {ranges.map((range) => (
-            <TouchableOpacity 
-              key={range.id} 
+            <TouchableOpacity
+              key={range.id}
               style={[
                 styles.rangeItem,
-                selectedRange === range.id && { 
+                selectedRange === range.id && {
                   backgroundColor: Colors[colorScheme].tint,
                 }
               ]}
               onPress={() => onSelectRange(range.id)}
             >
-              <ThemedText 
+              <ThemedText
                 style={[
                   styles.rangeItemText,
                   selectedRange === range.id && { color: '#fff' }
@@ -71,20 +71,20 @@ export default function HomeScreen() {
     { id: '27-45', name: '問題27〜45' },
     { id: '46-60', name: '問題46〜60' }
   ];
-  
+
   // 選択した範囲でクイズを開始
   const startQuizWithRange = () => {
     // パラメータ付きでクイズ画面に遷移
-    router.push({ 
+    router.push({
       pathname: '/quiz',
-      params: { 
+      params: {
         range: selectedRange,
         shuffle: 'true',  // デフォルトでシャッフルを有効に
         showHints: 'false' // デフォルトで自動ヒント表示を無効に
       }
     });
   };
-  
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A0D8F0', dark: '#1D3D47' }}
@@ -97,25 +97,25 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">学名テストへようこそ！</ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">遊び方</ThemedText>
         <ThemedText>
           表示される植物名から学名を答えましょう。正解すると自動的に次の問題に進みます。
         </ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">ヒントについて</ThemedText>
         <ThemedText>
           ヒントボタンを押すとヒントが表示されます。ヒントを参考にもう一度挑戦してみましょう！
         </ThemedText>
       </ThemedView>
-      
+
       {/* クイズ範囲選択を追加 */}
       <ThemedView style={styles.rangeSection}>
         <ThemedText type="subtitle">テスト範囲を選択</ThemedText>
-        
+
         <RangeSelector
           title="テストする問題範囲"
           ranges={quizRanges}
@@ -123,7 +123,7 @@ export default function HomeScreen() {
           onSelectRange={setSelectedRange}
         />
       </ThemedView>
-      
+
       <TouchableOpacity
         style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
         onPress={startQuizWithRange}

@@ -17,24 +17,24 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function QuizScreen() {
   // URLパラメータから設定を取得
-  const params = useLocalSearchParams<{ 
-    range?: string; 
+  const params = useLocalSearchParams<{
+    range?: string;
     shuffle?: string;
     showHints?: string;
   }>();
   const quizRange = params.range || 'all';
   const shouldShuffle = params.shuffle === 'true';
   const shouldShowHints = params.showHints !== 'false'; // デフォルトはtrue
-  
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [completed, setCompleted] = useState(false);
-  
+
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
-  
+
   // 配列をシャッフルする関数
   const shuffleArray = (array: QuizQuestion[]): QuizQuestion[] => {
     const shuffled = [...array];
@@ -44,11 +44,11 @@ export default function QuizScreen() {
     }
     return shuffled;
   };
-  
+
   // 選択された範囲に基づいて問題をフィルタリング
   const getFilteredQuestions = (range: string): QuizQuestion[] => {
     let questions = [];
-    
+
     if (range === 'all') {
       questions = [...quizQuestions];
     } else {
@@ -57,7 +57,7 @@ export default function QuizScreen() {
       if (match) {
         const startId = parseInt(match[1]);
         const endId = parseInt(match[2]);
-        
+
         questions = quizQuestions.filter(q => {
           const questionId = parseInt(q.id);
           return questionId >= startId && questionId <= endId;
@@ -70,19 +70,19 @@ export default function QuizScreen() {
         questions = [...quizQuestions];
       }
     }
-    
+
     // シャッフルが有効な場合、問題の順序をシャッフル
     if (shouldShuffle) {
       console.log("問題をシャッフルします");
       return shuffleArray(questions);
     }
-    
+
     return questions;
   };
-  
+
   // フィルタリングされた問題
   const [filteredQuestions, setFilteredQuestions] = useState<QuizQuestion[]>([]);
-  
+
   // 初回レンダリング時に問題をセットアップ
   useEffect(() => {
     const questions = getFilteredQuestions(quizRange);
@@ -92,37 +92,37 @@ export default function QuizScreen() {
       console.log("シャッフル後の問題ID:", questions.map(q => q.id).join(', '));
     }
   }, [quizRange, shouldShuffle]);
-  
+
   const totalQuestions = filteredQuestions.length;
   const currentQuestion = filteredQuestions[currentQuestionIndex];
-  
+
   // クイズが完了したかチェックする
   useEffect(() => {
     if (currentQuestionIndex >= filteredQuestions.length && filteredQuestions.length > 0) {
       setCompleted(true);
     }
   }, [currentQuestionIndex, filteredQuestions.length]);
-  
+
   // クイズ完了時のハプティックフィードバック
   useEffect(() => {
     if (completed && Platform.OS === 'ios') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
   }, [completed]);
-  
+
   // 回答をチェックする関数を修正
   const checkAnswer = (answer: string) => {
     if (!currentQuestion) return;
-    
+
     const normalizedAnswer = answer.trim().toLowerCase();
     const normalizedCorrectAnswer = currentQuestion.answer.toLowerCase();
-    
+
     const correct = normalizedAnswer === normalizedCorrectAnswer;
     setIsCorrect(correct);
-    
+
     if (correct) {
       setTotalCorrect(prev => prev + 1);
-      
+
       // 少し遅延して次の問題に移動
       setTimeout(() => {
         nextQuestion();
@@ -132,26 +132,26 @@ export default function QuizScreen() {
       if (shouldShowHints) {
         setShowHint(true);
       }
-      
+
       // 不正解フィードバックを表示した後、フィードバックのみをリセット
       setTimeout(() => {
         setIsCorrect(null);
       }, 1500);
     }
   };
-  
+
   // ヒントボタンを押したときの処理
   const toggleHint = () => {
     setShowHint(prev => !prev);
   };
-  
+
   // 次の問題へ進む
   const nextQuestion = () => {
     setCurrentQuestionIndex(prev => prev + 1);
     setIsCorrect(null);
     setShowHint(false);
   };
-  
+
   // クイズをリセット
   const resetQuiz = () => {
     setCurrentQuestionIndex(0);
@@ -160,7 +160,7 @@ export default function QuizScreen() {
     setShowHint(false);
     setCompleted(false);
   };
-  
+
   // リセット確認ダイアログを表示
   const confirmReset = () => {
     if (Platform.OS === 'web') {
@@ -219,17 +219,17 @@ export default function QuizScreen() {
             <ThemedText type="title" style={styles.resultTitle}>
               テスト完了！
             </ThemedText>
-            
+
             <ThemedText type="subtitle" style={styles.resultScore}>
               {totalQuestions}問中{totalCorrect}問正解
             </ThemedText>
-            
+
             <ThemedText style={styles.resultMessage}>
               {totalCorrect === totalQuestions
                 ? '全問正解おめでとう！'
                 : `正解率: ${Math.round((totalCorrect / totalQuestions) * 100)}%`}
             </ThemedText>
-            
+
             <TouchableOpacity
               style={[styles.button, { backgroundColor: Colors[colorScheme].tint }]}
               onPress={resetQuiz}
@@ -238,7 +238,7 @@ export default function QuizScreen() {
                 もう一度挑戦する
               </ThemedText>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={[styles.secondaryButton]}
               onPress={() => router.replace('/')}
@@ -293,7 +293,7 @@ export default function QuizScreen() {
             </ThemedText>
           )}
         </View>
-        
+
         <TouchableOpacity
           style={styles.resetButton}
           onPress={confirmReset}
@@ -303,29 +303,29 @@ export default function QuizScreen() {
           </ThemedText>
         </TouchableOpacity>
       </View>
-      
+
       <QuizProgress progress={progress} totalQuestions={totalQuestions} />
-      
+
       <Animated.View entering={FadeInDown.duration(300)}>
-        <QuizCard 
-          question={currentQuestion} 
+        <QuizCard
+          question={currentQuestion}
           showHint={showHint} // shouldShowHintsの条件を削除
         />
       </Animated.View>
-      
+
       <ThemedText style={[
         styles.feedback,
-        isCorrect === true ? styles.correctFeedback : 
-        isCorrect === false ? styles.incorrectFeedback : null
+        isCorrect === true ? styles.correctFeedback :
+          isCorrect === false ? styles.incorrectFeedback : null
       ]}>
-        {isCorrect === true ? '正解！' : 
-         isCorrect === false ? 'もう一度試してみましょう' : ''}
+        {isCorrect === true ? '正解！' :
+          isCorrect === false ? 'もう一度試してみましょう' : ''}
       </ThemedText>
-      
-      <QuizInput 
-        onSubmit={checkAnswer} 
-        onShowHint={toggleHint} 
-        isCorrect={isCorrect} 
+
+      <QuizInput
+        onSubmit={checkAnswer}
+        onShowHint={toggleHint}
+        isCorrect={isCorrect}
         showHint={showHint}
       />
     </ThemedView>

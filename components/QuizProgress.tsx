@@ -14,18 +14,18 @@ interface QuizProgressProps {
 
 export function QuizProgress({ progress, totalQuestions }: QuizProgressProps) {
   const progressPercent = (progress.currentQuestionIndex / totalQuestions) * 100;
-  
+
   return (
     <View style={styles.container}>
       <ThemedText style={styles.text}>
         問題 {progress.currentQuestionIndex + 1}/{totalQuestions}
       </ThemedText>
       <View style={styles.progressBarContainer}>
-        <View 
+        <View
           style={[
-            styles.progressBar, 
+            styles.progressBar,
             { width: `${progressPercent}%` }
-          ]} 
+          ]}
         />
       </View>
     </View>

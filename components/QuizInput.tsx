@@ -18,12 +18,12 @@ export function QuizInput({ onSubmit, onShowHint, isCorrect, showHint }: QuizInp
   const [answer, setAnswer] = useState('');
   const inputRef = useRef<TextInput>(null);
   const colorScheme = useColorScheme() ?? 'light';
-  
+
   // 入力欄に自動フォーカス
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
-  
+
   // 正解の場合のみ入力欄をクリア
   useEffect(() => {
     if (isCorrect === null) {
@@ -42,7 +42,7 @@ export function QuizInput({ onSubmit, onShowHint, isCorrect, showHint }: QuizInp
           if (Platform.OS === 'web') {
             // ウェブでは setSelection は使えないのでフォーカスのみ
             inputRef.current.focus();
-            
+
             // ウェブではプログラムで入力を全選択するのではなく、一度クリアして再入力する
             setAnswer('');
           } else {
@@ -79,12 +79,12 @@ export function QuizInput({ onSubmit, onShowHint, isCorrect, showHint }: QuizInp
         ref={inputRef}
         style={[
           styles.input,
-          { 
+          {
             color: Colors[colorScheme].text,
-            borderColor: isCorrect === true 
-              ? '#4CAF50' 
-              : isCorrect === false 
-                ? '#F44336' 
+            borderColor: isCorrect === true
+              ? '#4CAF50'
+              : isCorrect === false
+                ? '#F44336'
                 : Colors[colorScheme].icon,
             backgroundColor: colorScheme === 'dark' ? '#2A2A2A' : '#F5F5F5'
           }
@@ -97,16 +97,16 @@ export function QuizInput({ onSubmit, onShowHint, isCorrect, showHint }: QuizInp
         autoCorrect={false}
         editable={isCorrect !== true}
       />
-      
+
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
             styles.button,
-            { 
+            {
               backgroundColor: Colors[colorScheme].tint,
               opacity: (isCorrect === true || !answer.trim()) ? 0.6 : 1
             }
-          ]} 
+          ]}
           onPress={handleSubmit}
           disabled={isCorrect === true || !answer.trim()}
         >
@@ -114,19 +114,19 @@ export function QuizInput({ onSubmit, onShowHint, isCorrect, showHint }: QuizInp
             送信
           </ThemedText>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[
             styles.hintButton,
-            { 
+            {
               backgroundColor: showHint ? '#F9A825' : Colors[colorScheme === 'dark' ? 'dark' : 'light'].background,
               borderColor: Colors[colorScheme].tint,
             }
-          ]} 
+          ]}
           onPress={handleShowHint}
         >
           <ThemedText style={[
-            styles.hintButtonText, 
+            styles.hintButtonText,
             { color: showHint ? '#FFFFFF' : Colors[colorScheme].tint }
           ]}>
             ヒント

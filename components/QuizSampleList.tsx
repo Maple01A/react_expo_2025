@@ -24,7 +24,7 @@ export function QuizSampleList({ questions, maxDisplay = 5 }: QuizSampleListProp
             <ThemedText style={styles.questionText}>{q.question}</ThemedText>
           </ThemedView>
         ))}
-        
+
         {hasMore && (
           <ThemedText style={styles.moreText}>
             ほか {questions.length - maxDisplay} 問...

@@ -18,6 +18,14 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'gearshape.fill': 'settings', // このマッピングを追加
+  'exclamationmark.circle': 'error', // オプション: 他のアイコンも追加
+  'moon.fill': 'nightlight-round', // オプション: 他のアイコンも追加
+  'arrow.right': 'arrow-forward', // オプション: 他のアイコンも追加
+  'info.circle.fill': 'info', // オプション: 他のアイコンも追加
+  'person.fill': 'person', // オプション: 他のアイコンも追加
+  'lightbulb.fill': 'lightbulb', // オプション: 他のアイコンも追加
+  'shuffle': 'shuffle', // オプション: 他のアイコンも追加
 } as IconMapping;
 
 /**
