@@ -1,7 +1,8 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet, Switch, View, Text } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Switch, View, TouchableOpacity } from 'react-native';
+import { ScrollView, } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -90,7 +91,7 @@ function SettingItem({
 }
 
 export default function SettingsScreen() {
-  // 既存のステート設定
+  // 設定状態
   const [showHints, setShowHints] = useState(false);
   const [shuffleQuestions, setShuffleQuestions] = useState(true);
   const [darkMode, setDarkMode] = useState(useColorScheme() === 'dark');
@@ -98,7 +99,79 @@ export default function SettingsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
 
-  // この設定でクイズを開始するボタンを追加
+  // 初期化時に保存された設定を読み込む
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  // 設定の保存
+  const saveSettings = async () => {
+    try {
+      const settings = {
+        showHints,
+        shuffleQuestions,
+        darkMode
+      };
+      await AsyncStorage.setItem('quizSettings', JSON.stringify(settings));
+      console.log('設定を保存しました:', settings);
+    } catch (error) {
+      console.error('設定の保存に失敗しました:', error);
+    }
+  };
+
+  // 設定の読み込み
+  const loadSettings = async () => {
+    try {
+      const savedSettings = await AsyncStorage.getItem('quizSettings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        setShowHints(settings.showHints);
+        setShuffleQuestions(settings.shuffleQuestions);
+        // ダークモードは現在のシステム設定を優先
+        console.log('設定を読み込みました:', settings);
+      }
+    } catch (error) {
+      console.error('設定の読み込みに失敗しました:', error);
+    }
+  };
+
+  // 設定変更ハンドラー
+  const handleShowHintsChange = async (value: boolean) => {
+    setShowHints(value);
+    try {
+      const settings = {
+        showHints: value,
+        shuffleQuestions,
+        darkMode
+      };
+      await AsyncStorage.setItem('quizSettings', JSON.stringify(settings));
+      console.log('ヒント表示設定を保存しました:', value);
+    } catch (error) {
+      console.error('設定の保存に失敗しました:', error);
+    }
+  };
+
+  const handleShuffleQuestionsChange = async (value: boolean) => {
+    setShuffleQuestions(value);
+    try {
+      const settings = {
+        showHints,
+        shuffleQuestions: value,
+        darkMode
+      };
+      await AsyncStorage.setItem('quizSettings', JSON.stringify(settings));
+      console.log('シャッフル設定を保存しました:', value);
+    } catch (error) {
+      console.error('設定の保存に失敗しました:', error);
+    }
+  };
+
+  // ダークモードの切り替え（実際にはシステム設定に従うため、ここでは効果がない）
+  const handleDarkModeChange = (value: boolean) => {
+    setDarkMode(value);
+  };
+
+  // この設定でクイズを開始
   const startQuizWithSettings = () => {
     router.push({
       pathname: '/quiz',
@@ -112,12 +185,13 @@ export default function SettingsScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A0D8F0', dark: '#1D3D47' }}
+      headerImage={<View style={{ height: 1 }} />}
     >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">設定</ThemedText>
       </ThemedView>
 
-{/*       <ThemedView style={styles.section}>
+      <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           クイズ設定
         </ThemedText>
@@ -130,7 +204,7 @@ export default function SettingsScreen() {
             trackColor={{ false: '#767577', true: Colors[colorScheme].tint }}
             thumbColor="#f4f3f4"
             ios_backgroundColor="#3e3e3e"
-            onValueChange={setShowHints}
+            onValueChange={handleShowHintsChange}
             value={showHints}
           />
         </SettingItem>
@@ -143,12 +217,12 @@ export default function SettingsScreen() {
             trackColor={{ false: '#767577', true: Colors[colorScheme].tint }}
             thumbColor="#f4f3f4"
             ios_backgroundColor="#3e3e3e"
-            onValueChange={setShuffleQuestions}
+            onValueChange={handleShuffleQuestionsChange}
             value={shuffleQuestions}
           />
         </SettingItem>
       </ThemedView>
-
+      
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           アプリ設定
@@ -156,18 +230,19 @@ export default function SettingsScreen() {
 
         <SettingItem
           title="ダークモード"
-          description="アプリの表示テーマを変更します"
+          description="アプリの表示テーマを変更します（システム設定に依存）"
           icon="moon.fill">
           <Switch
             trackColor={{ false: '#767577', true: Colors[colorScheme].tint }}
             thumbColor="#f4f3f4"
             ios_backgroundColor="#3e3e3e"
-            onValueChange={setDarkMode}
+            onValueChange={handleDarkModeChange}
             value={darkMode}
+            disabled={true}
           />
         </SettingItem>
       </ThemedView>
- */}
+
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           アプリ情報

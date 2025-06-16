@@ -3,6 +3,8 @@ import { StyleSheet, TouchableOpacity, View, Alert, Platform } from 'react-nativ
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -23,20 +25,106 @@ export default function QuizScreen() {
     showHints?: string;
   }>();
   const quizRange = params.range || 'all';
-  const shouldShuffle = params.shuffle === 'true';
-  const shouldShowHints = params.showHints !== 'false'; // デフォルトはtrue
-
+  
+  // 状態管理
+  const [shouldShuffle, setShouldShuffle] = useState(true); // デフォルトをtrueに
+  const [shouldShowHints, setShouldShowHints] = useState(false); // デフォルトはfalse
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [skippedQuestions, setSkippedQuestions] = useState<number[]>([]); // スキップした問題のインデックスを記録
+  const [skippedQuestions, setSkippedQuestions] = useState<number[]>([]);
 
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
 
-  // 配列をシャッフルする関数
+  // 初期設定の読み込み
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // 保存された設定を読み込む
+        const savedSettings = await AsyncStorage.getItem('quizSettings');
+        
+        if (savedSettings) {
+          const settings = JSON.parse(savedSettings);
+          
+          // パラメータが指定されている場合はそちらを優先、なければ保存値を使用
+          if (params.shuffle !== undefined) {
+            setShouldShuffle(params.shuffle === 'true');
+          } else {
+            setShouldShuffle(settings.shuffleQuestions);
+          }
+          
+          if (params.showHints !== undefined) {
+            setShouldShowHints(params.showHints === 'true');
+          } else {
+            setShouldShowHints(settings.showHints);
+          }
+          
+          console.log('読み込んだ設定:', { 
+            shuffleQuestions: settings.shuffleQuestions, 
+            showHints: settings.showHints 
+          });
+        } else {
+          // 設定がない場合はパラメータを使用、それもなければデフォルト値
+          setShouldShuffle(params.shuffle === 'true' || true); // デフォルトtrue
+          setShouldShowHints(params.showHints === 'true' || false); // デフォルトfalse
+        }
+      } catch (error) {
+        console.error('設定の読み込みに失敗しました:', error);
+        // エラー時はパラメータを使用
+        setShouldShuffle(params.shuffle === 'true' || true);
+        setShouldShowHints(params.showHints === 'true' || false);
+      }
+    };
+
+    loadSettings();
+  }, [params.shuffle, params.showHints]);
+
+  // 画面がフォーカスされるたびに設定を再読み込み
+  useFocusEffect(
+    React.useCallback(() => {
+      // 設定の読み込み関数
+      const loadSettings = async () => {
+        try {
+          const savedSettings = await AsyncStorage.getItem('quizSettings');
+          
+          if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            
+            // URLパラメータが指定されている場合はそれを優先
+            if (params.shuffle !== undefined) {
+              setShouldShuffle(params.shuffle === 'true');
+            } else {
+              setShouldShuffle(settings.shuffleQuestions);
+            }
+            
+            if (params.showHints !== undefined) {
+              setShouldShowHints(params.showHints === 'true');
+            } else {
+              setShouldShowHints(settings.showHints);
+            }
+            
+            console.log('設定を再読み込みしました:', { 
+              shuffleQuestions: settings.shuffleQuestions, 
+              showHints: settings.showHints 
+            });
+          }
+        } catch (error) {
+          console.error('設定の読み込みに失敗しました:', error);
+        }
+      };
+
+      loadSettings();
+      
+      return () => {
+        // クリーンアップが必要な場合はここに記述
+      };
+    }, [])
+  );
+
+  // 配列をシャッフル
   const shuffleArray = (array: QuizQuestion[]): QuizQuestion[] => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -46,14 +134,13 @@ export default function QuizScreen() {
     return shuffled;
   };
 
-  // 選択された範囲に基づいて問題をフィルタリング
-  const getFilteredQuestions = (range: string): QuizQuestion[] => {
+  // 問題のフィルタリング
+  const getFilteredQuestions = (range: string, shuffle: boolean): QuizQuestion[] => {
     let questions = [];
 
     if (range === 'all') {
       questions = [...quizQuestions];
     } else {
-      // 範囲が "1-5" のような形式の場合
       const match = range.match(/(\d+)-(\d+)/);
       if (match) {
         const startId = parseInt(match[1]);
@@ -64,17 +151,14 @@ export default function QuizScreen() {
           return questionId >= startId && questionId <= endId;
         });
       } else if (!isNaN(Number(range))) {
-        // 単一のIDの場合
         questions = quizQuestions.filter(q => q.id === range);
       } else {
-        // デフォルトは全問題
         questions = [...quizQuestions];
       }
     }
 
-    // シャッフルが有効な場合、問題の順序をシャッフル
-    if (shouldShuffle) {
-      console.log("問題をシャッフルします");
+    // シャッフルが有効な場合のみシャッフル
+    if (shuffle) {
       return shuffleArray(questions);
     }
 
@@ -84,34 +168,34 @@ export default function QuizScreen() {
   // フィルタリングされた問題
   const [filteredQuestions, setFilteredQuestions] = useState<QuizQuestion[]>([]);
 
-  // 初回レンダリング時に問題をセットアップ
+  // 問題のセットアップ
   useEffect(() => {
-    const questions = getFilteredQuestions(quizRange);
+    const questions = getFilteredQuestions(quizRange, shouldShuffle);
     setFilteredQuestions(questions);
-    // シャッフルのデバッグ出力
+    
     if (shouldShuffle) {
-      console.log("シャッフル後の問題ID:", questions.map(q => q.id).join(', '));
+      console.log("問題をシャッフルしました");
     }
   }, [quizRange, shouldShuffle]);
 
   const totalQuestions = filteredQuestions.length;
   const currentQuestion = filteredQuestions[currentQuestionIndex];
 
-  // クイズが完了したかチェックする
+  // クイズ完了のチェック
   useEffect(() => {
     if (currentQuestionIndex >= filteredQuestions.length && filteredQuestions.length > 0) {
       setCompleted(true);
     }
   }, [currentQuestionIndex, filteredQuestions.length]);
 
-  // クイズ完了時のハプティックフィードバック
+  // クイズ完了時のフィードバック
   useEffect(() => {
     if (completed && Platform.OS === 'ios') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
   }, [completed]);
 
-  // 回答をチェックする関数を修正
+  // 回答チェック
   const checkAnswer = (answer: string) => {
     if (!currentQuestion) return;
 
@@ -123,62 +207,57 @@ export default function QuizScreen() {
 
     if (correct) {
       setTotalCorrect(prev => prev + 1);
-
-      // 少し遅延して次の問題に移動
+      
+      // 正解時に次の問題へ
       setTimeout(() => {
         nextQuestion();
       }, 1000);
     } else {
-      // 不正解の場合、ヒント表示設定がONの場合のみヒントを表示
+      // 不正解時、設定に応じてヒント表示
       if (shouldShowHints) {
         setShowHint(true);
       }
 
-      // 不正解フィードバックを表示した後、フィードバックのみをリセット
       setTimeout(() => {
         setIsCorrect(null);
       }, 1500);
     }
   };
 
-  // 問題をスキップする関数
+  // 問題スキップ
   const skipQuestion = () => {
-    // スキップした問題のインデックスを記録
     setSkippedQuestions(prev => [...prev, currentQuestionIndex]);
-    
-    // 次の問題へ進む
     nextQuestion();
     
-    // haptic feedback
     if (Platform.OS === 'ios') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
 
-  // ヒントボタンを押したときの処理
+  // ヒント表示切替
   const toggleHint = () => {
     setShowHint(prev => !prev);
   };
 
-  // 次の問題へ進む
+  // 次の問題へ
   const nextQuestion = () => {
     setCurrentQuestionIndex(prev => prev + 1);
     setIsCorrect(null);
     setShowHint(false);
   };
 
-  // クイズをリセット - やり直しボタン用に直接リセットする関数
+  // クイズリセット
   const resetQuiz = () => {
     setCurrentQuestionIndex(0);
     setTotalCorrect(0);
     setIsCorrect(null);
     setShowHint(false);
     setCompleted(false);
-    setSkippedQuestions([]); // スキップした問題もリセット
+    setSkippedQuestions([]);
     
-    // シャッフルが有効な場合は問題を再シャッフル
+    // シャッフルが有効なら再シャッフル
     if (shouldShuffle) {
-      const reshuffledQuestions = getFilteredQuestions(quizRange);
+      const reshuffledQuestions = getFilteredQuestions(quizRange, true);
       setFilteredQuestions(reshuffledQuestions);
     }
   };
@@ -189,6 +268,8 @@ export default function QuizScreen() {
     completed
   };
 
+  // 以下のレンダリングコード部分は変更なしで、そのまま維持します
+  
   // 問題がない場合の表示
   if (filteredQuestions.length === 0) {
     return (
@@ -204,10 +285,10 @@ export default function QuizScreen() {
           </ThemedText>
           <TouchableOpacity
             style={[styles.button, { backgroundColor: Colors[colorScheme].tint }]}
-            onPress={() => router.replace('/explore')}
+            onPress={() => router.replace('/')}
           >
             <ThemedText style={styles.buttonText}>
-              設定画面に戻る
+              ホーム画面に戻る
             </ThemedText>
           </TouchableOpacity>
         </ThemedView>
@@ -297,16 +378,14 @@ export default function QuizScreen() {
           <ThemedText style={styles.rangeInfo}>
             {quizRange === 'all' ? '全問題' : `問題範囲: ${quizRange}`}
           </ThemedText>
-          {shouldShuffle && (
-            <ThemedText style={styles.shuffleInfo}>
-              シャッフルモード
-            </ThemedText>
-          )}
-          {shouldShowHints && (
-            <ThemedText style={styles.hintInfo}>
-              自動ヒント表示オン
-            </ThemedText>
-          )}
+          
+          <ThemedText style={styles.settingInfo}>
+            {shouldShuffle ? 'シャッフルモード: オン' : 'シャッフルモード: オフ'}
+          </ThemedText>
+          
+          <ThemedText style={styles.settingInfo}>
+            {shouldShowHints ? '自動ヒント表示: オン' : '自動ヒント表示: オフ'}
+          </ThemedText>
         </View>
 
         <View style={styles.headerButtons}>
@@ -377,6 +456,11 @@ const styles = StyleSheet.create({
   rangeInfo: {
     opacity: 0.7,
     fontSize: 14,
+  },
+  settingInfo: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 4,
   },
   resetButton: {
     paddingHorizontal: 12,
