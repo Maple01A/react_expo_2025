@@ -31,6 +31,7 @@ export default function QuizScreen() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [skippedQuestions, setSkippedQuestions] = useState<number[]>([]); // スキップした問題のインデックスを記録
 
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
@@ -140,6 +141,20 @@ export default function QuizScreen() {
     }
   };
 
+  // 問題をスキップする関数
+  const skipQuestion = () => {
+    // スキップした問題のインデックスを記録
+    setSkippedQuestions(prev => [...prev, currentQuestionIndex]);
+    
+    // 次の問題へ進む
+    nextQuestion();
+    
+    // haptic feedback
+    if (Platform.OS === 'ios') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
   // ヒントボタンを押したときの処理
   const toggleHint = () => {
     setShowHint(prev => !prev);
@@ -152,30 +167,19 @@ export default function QuizScreen() {
     setShowHint(false);
   };
 
-  // クイズをリセット
+  // クイズをリセット - やり直しボタン用に直接リセットする関数
   const resetQuiz = () => {
     setCurrentQuestionIndex(0);
     setTotalCorrect(0);
     setIsCorrect(null);
     setShowHint(false);
     setCompleted(false);
-  };
-
-  // リセット確認ダイアログを表示
-  const confirmReset = () => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('テストをリセットしますか？\n進行状況は失われます。')) {
-        resetQuiz();
-      }
-    } else {
-      Alert.alert(
-        'リセット確認',
-        'テストをリセットしますか？\n進行状況は失われます。',
-        [
-          { text: 'キャンセル', style: 'cancel' },
-          { text: 'リセット', onPress: () => resetQuiz(), style: 'destructive' }
-        ]
-      );
+    setSkippedQuestions([]); // スキップした問題もリセット
+    
+    // シャッフルが有効な場合は問題を再シャッフル
+    if (shouldShuffle) {
+      const reshuffledQuestions = getFilteredQuestions(quizRange);
+      setFilteredQuestions(reshuffledQuestions);
     }
   };
 
@@ -229,6 +233,12 @@ export default function QuizScreen() {
                 ? '全問正解おめでとう！'
                 : `正解率: ${Math.round((totalCorrect / totalQuestions) * 100)}%`}
             </ThemedText>
+
+            {skippedQuestions.length > 0 && (
+              <ThemedText style={styles.skippedInfo}>
+                スキップした問題: {skippedQuestions.length}問
+              </ThemedText>
+            )}
 
             <TouchableOpacity
               style={[styles.button, { backgroundColor: Colors[colorScheme].tint }]}
@@ -292,16 +302,32 @@ export default function QuizScreen() {
               シャッフルモード
             </ThemedText>
           )}
+          {shouldShowHints && (
+            <ThemedText style={styles.hintInfo}>
+              自動ヒント表示オン
+            </ThemedText>
+          )}
         </View>
 
-        <TouchableOpacity
-          style={styles.resetButton}
-          onPress={confirmReset}
-        >
-          <ThemedText style={styles.resetButtonText}>
-            やり直す
-          </ThemedText>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={resetQuiz}
+          >
+            <ThemedText style={styles.resetButtonText}>
+              やり直す
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.skipButton}
+            onPress={skipQuestion}
+          >
+            <ThemedText style={styles.skipButtonText}>
+              スキップ
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <QuizProgress progress={progress} totalQuestions={totalQuestions} />
@@ -309,7 +335,7 @@ export default function QuizScreen() {
       <Animated.View entering={FadeInDown.duration(300)}>
         <QuizCard
           question={currentQuestion}
-          showHint={showHint} // shouldShowHintsの条件を削除
+          showHint={showHint}
         />
       </Animated.View>
 
@@ -344,6 +370,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
   rangeInfo: {
     opacity: 0.7,
     fontSize: 14,
@@ -357,6 +387,16 @@ const styles = StyleSheet.create({
   resetButtonText: {
     fontSize: 14,
     color: '#555',
+  },
+  skipButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+    backgroundColor: '#FFD700',
+  },
+  skipButtonText: {
+    fontSize: 14,
+    color: '#333',
   },
   feedback: {
     textAlign: 'center',
@@ -387,6 +427,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
   },
+  skippedInfo: {
+    fontSize: 16,
+    marginBottom: 20,
+    color: '#FFA500',
+  },
   noQuestionsContainer: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -415,6 +460,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   shuffleInfo: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 4,
+  },
+  hintInfo: {
     fontSize: 14,
     color: '#888',
     marginTop: 4,
