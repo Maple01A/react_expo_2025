@@ -378,14 +378,6 @@ export default function QuizScreen() {
           <ThemedText style={styles.rangeInfo}>
             {quizRange === 'all' ? '全問題' : `問題範囲: ${quizRange}`}
           </ThemedText>
-          
-          <ThemedText style={styles.settingInfo}>
-            {shouldShuffle ? 'シャッフルモード: オン' : 'シャッフルモード: オフ'}
-          </ThemedText>
-          
-          <ThemedText style={styles.settingInfo}>
-            {shouldShowHints ? '自動ヒント表示: オン' : '自動ヒント表示: オフ'}
-          </ThemedText>
         </View>
 
         <View style={styles.headerButtons}>
