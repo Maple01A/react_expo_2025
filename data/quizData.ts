@@ -368,5 +368,83 @@ export const quizQuestions: QuizQuestion[] = [
     answer: 'Stevia rebaudiana Bertoni',
     hint: 'Stevia rebaudiana Bertoni',
   },
+  {
+    id: '62',
+    question: 'サゴヤシ',
+    answer: 'Metoxylon sagu Rottb.',
+    hint: 'Metoxylon sagu Rottb.',
+  },
+    {
+    id: '63',
+    question: 'コンニャク',
+    answer: 'Amorphophallus konjac K. Koch',
+    hint: 'Amorphophallus konjac K. Koch',
+  },
+    {
+    id: '64',
+    question: 'パラゴム',
+    answer: 'Hevea brasiliensis Muel.-Arg.',
+    hint: 'Hevea brasiliensis Muel.-Arg.',
+  },
+    {
+    id: '65',
+    question: 'アラビアゴム',
+    answer: 'Acacia senegal Willd.',
+    hint: 'Acacia senegal Willd.',
+  },
+    {
+    id: '66',
+    question: 'ウルシ',
+    answer: 'Toxicodendron vernicifluum Stokes',
+    hint: 'Toxicodendron vernicifluum Stokes',
+  },
+    {
+    id: '67',
+    question: 'ラベンダー',
+    answer: 'Lavandura officinalis Chaix',
+    hint: 'Lavandura officinalis Chaix',
+  },
+    {
+    id: '68',
+    question: 'バニラ',
+    answer: 'Vanilla planifolia Andr.',
+    hint: 'Vanilla planifolia Andr.',
+  },
+    {
+    id: '69',
+    question: 'レモングラス',
+    answer: 'Cymbopogon citratus Stapf',
+    hint: 'Cymbopogon citratus Stapf',
+  },
+    {
+    id: '70',
+    question: 'ゼラニウム',
+    answer: 'Pelargonium spp.',
+    hint: 'Pelargonium spp.',
+  },
+    {
+    id: '71',
+    question: 'ベニノキ',
+    answer: 'Bixa orellana L.',
+    hint: 'Bixa orellana L.',
+  },
+      {
+    id: '72',
+    question: 'サフラン',
+    answer: 'Crocus sativus L.',
+    hint: 'Crocus sativus L.',
+  },
+      {
+    id: '73',
+    question: 'アイ',
+    answer: 'Polygonum tinctorium Lour.',
+    hint: 'Polygonum tinctorium Lour.',
+  },
+      {
+    id: '74',
+    question: 'ウコン',
+    answer: 'Curcuma longa L.',
+    hint: 'Curcuma longa L.',
+  },
 
 ];  

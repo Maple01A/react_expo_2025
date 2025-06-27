@@ -69,7 +69,8 @@ export default function HomeScreen() {
     { id: '1-13', name: '問題1〜13' },
     { id: '14-26', name: '問題14〜26' },
     { id: '27-45', name: '問題27〜45' },
-    { id: '46-60', name: '問題46〜60' }
+    { id: '46-61', name: '問題46〜61' },
+    { id: '62-74', name: '問題62〜74' }
   ];
 
   // 選択した範囲でクイズを開始
@@ -90,8 +91,6 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A0D8F0', dark: '#1D3D47' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
         />
       }>
       <ThemedView style={styles.titleContainer}>
