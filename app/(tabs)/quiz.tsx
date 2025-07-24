@@ -27,7 +27,7 @@ export default function QuizScreen() {
   const quizRange = params.range || 'all';
   
   // 状態管理
-  const [shouldShuffle, setShouldShuffle] = useState(true); // デフォルトをtrueに
+  const [shouldShuffle, setShouldShuffle] = useState(true); // デフォルトはtrue
   const [shouldShowHints, setShouldShowHints] = useState(false); // デフォルトはfalse
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showHint, setShowHint] = useState(false);

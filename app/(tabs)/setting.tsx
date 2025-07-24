@@ -183,10 +183,8 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A0D8F0', dark: '#1D3D47' }}
-      headerImage={<View style={{ height: 1 }} />}
-    >
+    <ThemedView style={styles.container}>
+      <View style={styles.header}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">設定</ThemedText>
       </ThemedView>
@@ -262,24 +260,25 @@ export default function SettingsScreen() {
       </ThemedView>
 
       <ThemedText style={styles.footer}>© 2025 学名テストアプリ</ThemedText>
-    </ParallaxScrollView>
+      </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   // 既存のスタイル
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
   titleContainer: {
+    paddingBottom: 20,
     flexDirection: 'row',
     gap: 8,
   },
+    header: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   contentContainer: {
     paddingHorizontal: 20,

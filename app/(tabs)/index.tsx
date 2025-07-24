@@ -87,62 +87,68 @@ export default function HomeScreen() {
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A0D8F0', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">学名テストへようこそ！</ThemedText>
-      </ThemedView>
+    <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">学名テストへようこそ！</ThemedText>
+        </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">遊び方</ThemedText>
-        <ThemedText>
-          表示される植物名から学名を答えましょう。正解すると自動的に次の問題に進みます。
-        </ThemedText>
-      </ThemedView>
-
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">ヒントについて</ThemedText>
-        <ThemedText>
-          ヒントボタンを押すとヒントが表示されます。ヒントを参考にもう一度挑戦してみましょう！
-        </ThemedText>
-      </ThemedView>
-
-      {/* クイズ範囲選択を追加 */}
-      <ThemedView style={styles.rangeSection}>
-        <ThemedText type="subtitle">テスト範囲を選択</ThemedText>
-
-        <RangeSelector
-          title="テストする問題範囲"
-          ranges={quizRanges}
-          selectedRange={selectedRange}
-          onSelectRange={setSelectedRange}
-        />
-      </ThemedView>
-
-      <TouchableOpacity
-        style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
-        onPress={startQuizWithRange}
-      >
-        <View style={styles.startButtonContent}>
-          <ThemedText style={styles.startButtonText}>
-            テストを開始
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">遊び方</ThemedText>
+          <ThemedText>
+            表示される植物名から学名を答えましょう。正解すると自動的に次の問題に進みます。
           </ThemedText>
-          <IconSymbol name="arrow.right" color="#FFF" size={20} />
-        </View>
-      </TouchableOpacity>
-    </ParallaxScrollView>
+        </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">ヒントについて</ThemedText>
+          <ThemedText>
+            ヒントボタンを押すとヒントが表示されます。ヒントを参考にもう一度挑戦してみましょう！
+          </ThemedText>
+        </ThemedView>
+
+        {/* クイズ範囲選択を追加 */}
+        <ThemedView style={styles.rangeSection}>
+          <ThemedText type="subtitle">テスト範囲を選択</ThemedText>
+
+          <RangeSelector
+            title="テストする問題範囲"
+            ranges={quizRanges}
+            selectedRange={selectedRange}
+            onSelectRange={setSelectedRange}
+          />
+        </ThemedView>
+
+        <TouchableOpacity
+          style={[styles.startButton, { backgroundColor: Colors[colorScheme].tint }]}
+          onPress={startQuizWithRange}
+        >
+          <View style={styles.startButtonContent}>
+            <ThemedText style={styles.startButtonText}>
+              テストを開始
+            </ThemedText>
+            <IconSymbol name="arrow.right" color="#FFF" size={20} />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  header: {
+    flex: 1,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    marginBottom: 20,
   },
   stepContainer: {
     gap: 8,
